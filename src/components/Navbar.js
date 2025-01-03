@@ -19,7 +19,8 @@ const NavbarVariant2 = () => {
     <AppBar
       position="static"
       sx={{
-        background: "linear-gradient(135deg, #0f0c29, #302b63, #24243e)",
+        background: "linear-gradient(135deg, #ff7e5f, #feb47b, #f7b733)",
+
         color: "#fff",
         padding: "0 20px",
       }}
@@ -33,9 +34,9 @@ const NavbarVariant2 = () => {
             <Button
               onClick={handleLogout}
               sx={{
-                backgroundColor: "#222",
+                backgroundColor: "#ff7e5f", // Warm peachy-pink
                 color: "#fff",
-                '&:hover': { backgroundColor: "#333" },
+                '&:hover': { backgroundColor: "#feb47b" }, // Soft coral
               }}
             >
               Logout
@@ -46,9 +47,9 @@ const NavbarVariant2 = () => {
                 component={Link}
                 to="/login"
                 sx={{
-                  border: "1px solid white",
+                  border: "1px solid #ff7e5f", // Matches the gradient color
                   color: "white",
-                  '&:hover': { backgroundColor: "rgba(255, 255, 255, 0.2)" },
+                  '&:hover': { backgroundColor: "rgba(255, 126, 95, 0.2)" }, // Translucent peachy hover
                 }}
               >
                 Login
@@ -57,9 +58,9 @@ const NavbarVariant2 = () => {
                 component={Link}
                 to="/register"
                 sx={{
-                  backgroundColor: "#222",
+                  backgroundColor: "#feb47b", // Soft coral
                   color: "#fff",
-                  '&:hover': { backgroundColor: "#444" },
+                  '&:hover': { backgroundColor: "#f7b733" }, // Vibrant golden-yellow
                   marginLeft: 1,
                 }}
               >
@@ -68,6 +69,7 @@ const NavbarVariant2 = () => {
             </>
           )}
         </Box>
+
       </Toolbar>
     </AppBar>
   );

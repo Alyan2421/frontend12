@@ -256,187 +256,188 @@ const FeedPage = () => {
 
   return (
     <Box
+    sx={{
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      height: "90vh",
+      mt: 4,
+      position: "relative",
+      background: "linear-gradient(135deg, #1e3c72, #2a5298)", // Updated gradient
+    }}
+  >
+    <Box
+      ref={containerRef}
       sx={{
+        width: 950,
+        height: 550,
+        backgroundColor: "#121212",
+        borderRadius: 20,
+        boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+        overflow: "hidden",
+        position: "relative",
+      }}
+    >
+      {videos.map((video, index) => (
+        <CardMedia
+          key={video._id}
+          component="video"
+          src={video.videoUrl}
+          controls
+          ref={(el) => (videoRefs.current[index] = el)}
+          autoPlay={index === currentIndex}
+          loop
+          muted
+          controlsList="nodownload noplaybackrate"
+          sx={{ width: "100%", height: "100%", objectFit: "cover" }}
+        />
+      ))}
+    </Box>
+    
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        position: "absolute",
+        top: 100,
+        left: 25,
+        backgroundColor: "rgba(255, 255, 255, 0.1)",
+        borderRadius: 10,
+        padding: 1,
+      }}
+    >
+      {/* Filter Icons */}
+      {["B&W", "Blur", "Sharp"].map((filterName) => (
+        <IconButton
+          key={filterName}
+          onClick={() => setFilter(filterName)}
+          sx={{
+            color: filter === filterName ? "#64b5f6" : "#fff",
+            marginBottom: 1,
+          }}
+        >
+          {filterName === "B&W" ? <BWRoundedIcon /> : filterName === "Blur" ? <BlurIcon /> : <FilterNoneIcon />}
+        </IconButton>
+      ))}
+    </Box>
+  
+    <Button
+      variant="contained"
+      onClick={toggleListening}
+      sx={{
+        position: "absolute",
+        bottom: 80,
+        left: 20,
+        backgroundColor: isListening ? "#d32f2f" : "#388e3c",
+        color: "#fff",
+        "&:hover": {
+          backgroundColor: isListening ? "#b71c1c" : "#2e7d32",
+        },
+      }}
+    >
+      {isListening ? "Stop Listening" : "Start Voice Command"}
+    </Button>
+  
+    {/* Icons */}
+    {[
+      { icon: <FavoriteIcon fontSize="large" />, position: { top: 20, left: 20 }, action: () => handleLike(currentIndex), label: `${likes[currentIndex] || 0}` },
+      { icon: <DownloadIcon fontSize="large" />, position: { top: 20, right: 20 }, action: handleDownload },
+      { icon: <CommentIcon fontSize="large" />, position: { bottom: 20, left: 20 }, action: handleCommentClick },
+      { icon: <MusicNoteIcon fontSize="large" />, position: { bottom: 20, right: 20 }, action: handleAudioDownload },
+    ].map(({ icon, position, action, label }, index) => (
+      <IconButton
+        key={index}
+        sx={{
+          position: "absolute",
+          ...position,
+          color: "#fff",
+          fontSize: "2rem",
+          "&:hover": {
+            color: "#64b5f6",
+          },
+        }}
+        onClick={action}
+      >
+        {icon}
+        {label && (
+          <Typography
+            sx={{
+              color: "#fff",
+              fontSize: "0.8rem",
+              textAlign: "center",
+              marginTop: "4px",
+            }}
+          >
+            {label}
+          </Typography>
+        )}
+      </IconButton>
+    ))}
+  
+    <Button
+      variant="contained"
+      sx={{
+        position: "absolute",
+        bottom: 80,
+        right: 30,
+        backgroundColor: "#42a5f5",
+        color: "#fff",
+        width: 60,
+        height: 60,
+        borderRadius: "50%",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        height: "90vh",
-        mt: 4,
-        position: "relative",
-        background: "#f5f5f5"
+        "&:hover": { backgroundColor: "#1e88e5" },
+      }}
+      onClick={() => navigate("/upload")}
+    >
+      <AddIcon />
+    </Button>
+  
+    {/* Comment Dialog */}
+    <Dialog
+      open={isCommentDialogOpen}
+      onClose={() => setIsCommentDialogOpen(false)}
+    >
+      <DialogTitle sx={{ backgroundColor: "#121212", color: "#fff" }}>Add a Comment</DialogTitle>
+      <DialogContent sx={{ backgroundColor: "#121212", color: "#fff" }}>
+        <TextField
+          label="Comment"
+          variant="outlined"
+          fullWidth
+          value={commentText}
+          onChange={(e) => setCommentText(e.target.value)}
+          sx={{ input: { color: "#fff" }, label: { color: "#64b5f6" } }}
+        />
+      </DialogContent>
+      <DialogActions sx={{ backgroundColor: "#121212" }}>
+        <Button onClick={() => setIsCommentDialogOpen(false)} sx={{ color: "#fff" }}>Cancel</Button>
+        <Button onClick={handleCommentSubmit} sx={{ color: "#64b5f6" }}>
+          Post
+        </Button>
+      </DialogActions>
+    </Dialog>
+  
+    <Box
+      sx={{
+        padding: "10px",
+        color: "#fff",
+        maxHeight: "200px",
+        overflowY: "auto",
+        backgroundColor: "rgba(0, 0, 0, 0.7)",
+        borderRadius: 10,
+        marginTop: 2,
       }}
     >
-      <Box
-        ref={containerRef}
-        sx={{
-          width: 950,
-          height: 550,
-          backgroundColor: "#232323",
-          borderRadius: 20,
-          boxShadow: "0 0 20px rgba(100, 100, 255, 0.8)",
-          overflow: "hidden",
-          position: "relative",
-        }}
-      >
-        {videos.map((video, index) => (
-          <CardMedia
-            key={video._id}
-            component="video"
-            src={video.videoUrl}
-            controls
-            ref={(el) => (videoRefs.current[index] = el)}
-            autoPlay={index === currentIndex}
-            loop
-            muted
-            controlsList="nodownload noplaybackrate"
-            sx={{ width: "100%", height: "100%", objectFit: "contain" }}
-          />
-        ))}
-      </Box>
-      <Box sx={{ display: 'flex', flexDirection: 'column', position: "absolute", top: 100, left: 25 }}>
-        {/* Filter Icons */}
-        <IconButton
-          onClick={() => setFilter("B&W")}
-          sx={{ color: filter === "B&W" ? "primary.main" : "inherit" }}
-        >
-          <BWRoundedIcon />
-        </IconButton>
-        <IconButton
-          onClick={() => setFilter("Blur")}
-          sx={{ color: filter === "Blur" ? "primary.main" : "inherit" }}
-        >
-          <BlurIcon />
-        </IconButton>
-        <IconButton
-          onClick={() => setFilter("Sharp")}
-          sx={{ color: filter === "Sharp" ? "primary.main" : "inherit" }}
-        >
-          <FilterNoneIcon />
-        </IconButton>
-      </Box>
-
-      <Button
-        variant="contained"
-        onClick={toggleListening}
-        sx={{
-          position: "absolute",
-          bottom: 80,
-          left: 20,
-          backgroundColor: isListening ? "red" : "green",
-          color: "white",
-        }}
-      >
-        {isListening ? "Stop Listening" : "Start Voice Command"}
-      </Button>
-
-
-      {/* Icons placed outside the video card */}
-      <IconButton
-        sx={{
-          position: "absolute",
-          top: 20,
-          left: 20,
-          color: "black",
-          fontSize: "2rem",
-        }}
-        onClick={() => handleLike(currentIndex)}
-      >
-        <FavoriteIcon fontSize="large" />
-        <Typography sx={{ color: "black", fontSize: "0.8rem", textAlign: "center" }}>
-          {likes[currentIndex] || 0} {/* Display the like count (0 or 1) */}
+      {comments[currentIndex]?.map((comment, index) => (
+        <Typography key={index} sx={{ marginBottom: "8px" }}>
+          {comment.text}
         </Typography>
-      </IconButton>
-
-
-      <IconButton
-        sx={{
-          position: "absolute",
-          top: 20,
-          right: 20,
-          color: "black",
-          fontSize: "2rem",
-        }}
-        onClick={handleDownload}
-      >
-        <DownloadIcon fontSize="large" />
-      </IconButton>
-
-      <IconButton
-        sx={{
-          position: "absolute",
-          bottom: 20,
-          left: 20,
-          color: "black",
-          fontSize: "2rem",
-        }}
-        onClick={handleCommentClick}
-      >
-        <CommentIcon fontSize="large" />
-      </IconButton>
-
-      <IconButton
-        sx={{
-          position: "absolute",
-          bottom: 20,
-          right: 20,
-          color: "black",
-          fontSize: "2rem",
-        }}
-        onClick={handleAudioDownload}
-      >
-        <MusicNoteIcon fontSize="large" />
-      </IconButton>
-      <Button
-        variant="contained"
-        sx={{
-          position: "absolute",
-          bottom: 80,
-          right: 30,
-          backgroundColor: "#64b5f6",
-          color: "#fff",
-          width: 60,
-          height: 60,
-          borderRadius: "50%",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          "&:hover": { backgroundColor: "#42a5f5" },
-        }}
-        onClick={() => navigate("/upload")}
-      >
-        <AddIcon />
-      </Button>
-
-      {/* Comment Dialog */}
-      <Dialog
-        open={isCommentDialogOpen}
-        onClose={() => setIsCommentDialogOpen(false)}
-      >
-        <DialogTitle>Add a Comment</DialogTitle>
-        <DialogContent>
-          <TextField
-            label="Comment"
-            variant="outlined"
-            fullWidth
-            value={commentText}
-            onChange={(e) => setCommentText(e.target.value)}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setIsCommentDialogOpen(false)}>Cancel</Button>
-          <Button onClick={handleCommentSubmit} color="primary">
-            Post
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <Box sx={{ padding: "10px", color: "#fff", maxHeight: "200px", overflowY: "auto" }}>
-        {comments[currentIndex]?.map((comment, index) => (
-          <Typography key={index} sx={{ color: 'black', marginBottom: "8px" }}>
-            {comment.text}
-          </Typography>
-        ))}
-      </Box>
+      ))}
     </Box>
+  </Box>
+  
   );
 };
 
